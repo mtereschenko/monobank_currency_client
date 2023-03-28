@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface CurrencyRow {
   currencyCodeA: Number;
@@ -22,6 +22,12 @@ interface CurrencyRow {
 function App() {
 
   const [data, setData] = useState<Array<CurrencyRow>>([]);
+
+  useEffect(() => { 
+    fetch(window.location.protocol + "//" + window.location.host + '/api/currencies')
+      .then((response) => response.json())
+      .then((actualData) => setData(actualData))
+  }, []);
 
   window.Echo.channel('CurrenciesUpdated')
     .listen('CurrenciesUpdatedEvent', (e: any) => {

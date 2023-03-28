@@ -16,11 +16,6 @@ class FetchCurrency
 
 	private function getCurrencies()
 	{
-		// $client = new \GuzzleHttp\Client();
-		// $response = $client->request('GET', "https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true&hourly=temperature_2m,relativehumidity_2m,windspeed_10m");
-
-		// return $response->getBody()->getContents();
-
 		$data = $this->fetchData();
 		$result = $this->mapToCurrencyObjects($data);
 
@@ -29,16 +24,16 @@ class FetchCurrency
 
 	private function fetchData()
 	{
-		// try {
+		try {
 			if (env('APP_ENV') == TEST) {
-				return json_decode(file_get_contents(storage_path('app/public/mock.json')));
+				return json_decode(file_get_contents(storage_path('mock.json')));
 			}
 			$client = new GuzzleHttpClient();
 			$response = $client->request('GET', 'https://api.monobank.ua/bank/currency');
 			return json_decode($response->getBody()->getContents());
-		// } catch (\Exception $e) {
-			// Log::error($e->getMessage());
-		// }
+		} catch (\Exception $e) {
+			Log::error($e->getMessage());
+		}
 	}
 
 	private function mapToCurrencyObjects($data)

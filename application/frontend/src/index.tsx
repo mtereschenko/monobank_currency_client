@@ -22,8 +22,8 @@ window.Pusher = Pusher;
 window.Echo = new Echo({
   broadcaster: 'pusher',
   key: 'laravel_rdb',
-  wsHost: 'localhost',
-  wsPort: 6001,
+  wsHost: window.location.host,
+  wsPort: 80,
   forceTLS: false,
   disableStats: true,
   cluster: 'eu',

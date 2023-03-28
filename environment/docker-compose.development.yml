@@ -29,8 +29,6 @@ services:
       context: ./
       dockerfile: ./containers/php/Dockerfile
       target: development
-    ports:
-      - 6001:6001
     volumes:
       - ${BACKEND_PATH}:/app:cached
     environment:
