@@ -1,0 +1,54 @@
+version: '3.7'
+services:
+  nginx:
+    image: "${PROJECT_NAME}/nginx:development"
+    container_name: ${PROJECT_NAME}-nginx
+    build: 
+      context: ./
+      dockerfile: ./containers/nginx/Dockerfile
+    depends_on:
+      - php
+    tty: true
+    ports:
+      - 80:80
+    volumes:
+      - ./artifacts/nginx/:/var/log/nginx:cached
+      - ${BACKEND_PATH}:/app:cached
+  node:
+    image: "${PROJECT_NAME}/node:development"
+    container_name: ${PROJECT_NAME}-node
+    build: 
+      context: ./
+      dockerfile: ./containers/node/Dockerfile
+    volumes:
+      - ${FRONTEND_PATH}:/app:cached
+  php:
+    image: "${PROJECT_NAME}/php:development"
+    container_name: ${PROJECT_NAME}-php
+    build:
+      context: ./
+      dockerfile: ./containers/php/Dockerfile
+      target: development
+    ports:
+      - 6001:6001
+    volumes:
+      - ${BACKEND_PATH}:/app:cached
+    environment:
+      PROJECT_NAME: ${PROJECT_NAME}
+  postgres:
+    image: "${PROJECT_NAME}/postgres:development"
+    container_name: ${PROJECT_NAME}-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    build:
+      context: ./
+      dockerfile: ./containers/postgres/Dockerfile
+    ports:
+      - ${DB_PORT}:5432
+    volumes:
+      - monobank_currency_client_postgress_volume:/var/lib/postgresql/data
+
+volumes:
+  monobank_currency_client_postgress_volume:
